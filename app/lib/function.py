@@ -11,12 +11,12 @@ def verifIsPngAndJpeg(file: UploadFile):
         "jpeg/2000": b"\x00\x00\x00\x0C\x6A\x50\x20\x20\x0D\x0A\x87\x0A"
     }
 
-    header = file.file.read(12)
-    file.file.seek(0)
+    with file.file as f:
+        header = f.read(12)
 
-    for file_type, signature in signatures.items():
-        if header.startswith(signature):
-            return file_type
-    file.file.close()
-    return None
+        for file_type, signature in signatures.items():
+            if header.startswith(signature):
+                return file_type
+
+    raise ValueError("Invalid file type. The file is not a PNG or JPEG.")
 
