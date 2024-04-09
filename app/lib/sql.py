@@ -23,7 +23,7 @@ pool = MySQLConnectionPool(
 )
 
 @contextmanager
-def get_cursor(commit_on_exit=True):
+async def get_cursor(commit_on_exit=True):
     async with pool.connection() as connection:
         async with connection.cursor() as cursor:
             try:
@@ -36,7 +36,7 @@ def get_cursor(commit_on_exit=True):
             finally:
                 await cursor.close()
                 await connection.close()
-
+                
 async def get_members() -> List[MemberWithCategory]:
     async with get_cursor() as cursor:
         await cursor.execute("SELECT member.id, member.username, member.url_portfolio, member.date_validate, "
